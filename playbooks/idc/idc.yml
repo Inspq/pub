@@ -1,0 +1,33 @@
+---
+- hosts: all
+  tasks:
+  - name: Configuration du dépôt Epel et installation de git et svn
+    yum:
+       name: "{{ item }}"
+       state: present
+    when: ansible_os_family == "RedHat"
+    with_items:       
+      - git
+      - epel-release
+      - subversion
+
+  - name: Installation d'Ansible provenant du dépôt Epel
+    yum:
+       name: ansible
+       state: present
+    when: ansible_os_family == "RedHat"
+
+  - name: Création du groupe jenkins
+    group:
+        name: jenkins
+        state: present
+
+  - name: Création de l'usager jenkins
+    user:
+        name: jenkins
+        home: /var/lib/jenkins
+        group: jenkins
+        generate_ssh_key: yes
+        state: present
+
+
